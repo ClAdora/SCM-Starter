@@ -1,42 +1,62 @@
-#Solidity SmartContract
-Overview
-This Solidity SmartContract, named "Assessment," is designed to function as a basic ATM service on the Ethereum blockchain. It features functionalities such as depositing and withdrawing funds, age verification, and maintaining user account balances. The contract is equipped with event logging and custom error handling for a more robust user experience.
+# Metacrafters ATM
 
-State Variables
-owner: The Ethereum address that deploys the contract, serving as the owner of the ATM.
-balance: A state variable representing the total balance of the ATM.
-birthYears: A mapping of Ethereum addresses to their corresponding birth years.
-Events
-Deposit(uint256 amount): Triggered when a deposit is made, logging the deposited amount.
-Withdraw(uint256 amount): Triggered when a withdrawal occurs, logging the withdrawn amount.
-Functions
-onlyAdult: A modifier ensuring that the user invoking a function is 18 years or older.
-getBalance(): Retrieves the current balance of the ATM.
-userAge(address _user): Calculates and returns the age of a user based on their provided birth year.
-setBirthYear(uint256 _year): Sets the birth year for the calling user.
-deposit(uint256 _amount): Allows the owner to deposit funds into the ATM, updating the balance.
-withdraw(uint256 _withdrawAmount): Allows the owner to withdraw funds from the ATM, with proper balance checks.
-Error Handling
-Custom error InsufficientBalance is triggered when a withdrawal is attempted with insufficient funds.
-React Application
-Overview
-The React application is a front-end interface for interacting with the Assessment SmartContract. It uses the MetaMask wallet for account authentication and provides a simple user interface to view account details, deposit, and withdraw funds.
+## Overview
 
-Components
-HomePage: The main component rendering the UI elements.
-getWallet: Fetches the MetaMask wallet and updates the account details.
-handleAccount: Manages the user account, prompting for birth year and setting it.
-setBirthYear: Calls the SmartContract function to set the user's birth year.
-connectAccount: Connects the MetaMask wallet and initializes the ATM contract.
-getATMContract: Initializes the ATM contract using ethers.js.
-getBalance: Retrieves and updates the user's balance from the SmartContract.
-deposit: Initiates a deposit transaction and updates the balance.
-withdraw: Initiates a withdrawal transaction and updates the balance.
-initUser: Renders the user interface based on the user's age and account status.
-Usage
-Install MetaMask to use the ATM.
-Connect your MetaMask wallet to the application.
-Enter your birth year when prompted.
-Interact with the ATM by checking your balance, depositing, and withdrawing funds.
-License
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+This project consists of a simple decentralized application (DApp) built with React and a corresponding smart contract written in Solidity. The DApp simulates an ATM system that allows users to deposit and withdraw funds based on certain conditions. The smart contract, named `Assessment.sol`, is deployed on the Ethereum blockchain, and the React app, `HomePage.js`, interacts with the contract through the MetaMask wallet.
+
+## Features
+
+- **Connection with MetaMask:** The React app connects to the MetaMask wallet to interact with the Ethereum blockchain.
+
+- **Age Verification:** Users must input their birth year to verify their age. Only users who are 18 years or older are allowed to access the ATM functions.
+
+- **Deposit and Withdrawal:** Users can deposit and withdraw funds from the ATM, subject to age verification and other conditions.
+
+## Smart Contract Details (Assessment.sol)
+
+- **Owner:** The contract owner is set during deployment and has special privileges.
+
+- **Balance:** Tracks the balance of the smart contract.
+
+- **Birth Years:** A mapping that stores the birth year of each user.
+
+- **Modifiers:**
+  - `onlyAdult:` Ensures that the user is 18 years or older.
+
+- **Functions:**
+  - `getBalance():` Retrieves the current balance of the contract.
+  - `userAge(address _user):` Retrieves the age of a user based on their birth year.
+  - `setBirthYear(uint256 _year):` Sets the birth year for a user.
+  - `deposit(uint256 _amount):` Allows the owner to deposit funds into the contract.
+  - `withdraw(uint256 _withdrawAmount):` Allows the owner to withdraw funds, with age and balance checks.
+
+## React App Details (HomePage.js)
+
+- **State Variables:**
+  - `ethWallet:` Stores the MetaMask wallet.
+  - `account:` Stores the connected user's Ethereum account.
+  - `atm:` Represents the deployed smart contract.
+  - `balance:` Tracks the user's balance.
+  - `userAge:` Stores the user's age.
+
+- **Functions:**
+  - `getWallet():` Connects the app to the MetaMask wallet.
+  - `handleAccount(account):` Handles the user account details and age verification.
+  - `setBirthYear(year):` Sets the user's birth year on the smart contract.
+  - `connectAccount():` Connects the app to the user's MetaMask account.
+  - `getATMContract():` Gets a reference to the deployed smart contract.
+  - `getBalance():` Retrieves the user's balance from the smart contract.
+  - `deposit():` Deposits 1 ETH into the smart contract.
+  - `withdraw():` Withdraws 1 ETH from the smart contract.
+
+## Getting Started
+
+1. Clone the repository.
+2. Install dependencies using `npm install` in the React app directory.
+3. Deploy the `Assessment.sol` contract to the Ethereum blockchain.
+4. Update the `contractAddress` variable in `HomePage.js` with the deployed contract address.
+5. Run the React app using `npm start`.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
