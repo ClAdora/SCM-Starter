@@ -7,6 +7,7 @@ export default function HomePage() {
   const [account, setAccount] = useState(undefined);
   const [atm, setATM] = useState(undefined);
   const [balance, setBalance] = useState(undefined);
+  const [userAge, setUserAge] = useState(undefined);
 
   const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const atmABI = atm_abi.abi;
@@ -24,13 +25,41 @@ export default function HomePage() {
 
   const handleAccount = (account) => {
     if (account) {
-      console.log ("Account connected: ", account);
+      console.log("Account connected: ", account);
       setAccount(account);
-    }
-    else {
+
+      let birthYear = prompt("Please enter your birth year:");
+
+      if (birthYear === null) {
+        setAccount(undefined);
+        setUserAge(undefined);
+        return;
+      }
+
+      birthYear = parseInt(birthYear);
+
+      if (isNaN(birthYear) || birthYear < 1900 || birthYear > 2023) {
+        alert("Invalid birth year. Please enter a valid year between 1900 and 2023.");
+        setAccount(undefined);
+        setUserAge(undefined);
+      } else {
+        setUserAge(2023 - birthYear);
+        setBirthYear(birthYear);
+      }
+    } else {
       console.log("No account found");
     }
-  }
+  };
+
+  const setBirthYear = async (year) => {
+    if (atm) {
+        try {
+            await atm.setBirthYear(year);
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+  };
 
   const connectAccount = async() => {
     if (!ethWallet) {
@@ -76,17 +105,28 @@ export default function HomePage() {
   }
 
   const initUser = () => {
-    // Check to see if user has Metamask
     if (!ethWallet) {
-      return <p>Please install Metamask in order to use this ATM.</p>
+      return <p>Please install Metamask in order to use this ATM.</p>;
     }
-
-    // Check to see if user is connected. If not, connect to their account
+  
     if (!account) {
-      return <button onClick={connectAccount}>Please connect your Metamask wallet</button>
+      return (
+        <div>
+          <p>You must be at least 18 years old to have an account.</p>
+          <button onClick={connectAccount}>Login Using Metamask</button>
+        </div>
+      );
     }
-
-    if (balance == undefined) {
+  
+    if (userAge === undefined) {
+      return null;
+    }
+  
+    if (userAge < 18) {
+      return <p class="block">Sorry, you must be at least 18 years old to use this service.</p>;
+    }
+  
+    if (balance === undefined) {
       getBalance();
     }
 
@@ -108,7 +148,8 @@ export default function HomePage() {
       {initUser()}
       <style jsx>{`
         .container {
-          text-align: center
+          text-align: center;
+          background-color:violet;
         }
       `}
       </style>
