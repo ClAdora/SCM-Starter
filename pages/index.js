@@ -1,5 +1,5 @@
-import {useState, useEffect} from "react";
-import {ethers} from "ethers";
+import { useState, useEffect } from "react";
+import { ethers } from "ethers";
 import atm_abi from "../artifacts/contracts/Assessment.sol/Assessment.json";
 
 export default function HomePage() {
@@ -7,70 +7,42 @@ export default function HomePage() {
   const [account, setAccount] = useState(undefined);
   const [atm, setATM] = useState(undefined);
   const [balance, setBalance] = useState(undefined);
-  const [userAge, setUserAge] = useState(undefined);
+  const [num1, setNum1] = useState("");
+  const [num2, setNum2] = useState("");
+  const [checkNum, setCheckNum] = useState("");
 
   const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const atmABI = atm_abi.abi;
 
-  const getWallet = async() => {
+  const getWallet = async () => {
     if (window.ethereum) {
       setEthWallet(window.ethereum);
     }
 
     if (ethWallet) {
-      const account = await ethWallet.request({method: "eth_accounts"});
-      handleAccount(account);
+      const accounts = await ethWallet.request({ method: "eth_accounts" });
+      handleAccount(accounts);
     }
-  }
+  };
 
   const handleAccount = (account) => {
     if (account) {
       console.log("Account connected: ", account);
       setAccount(account);
-
-      let birthYear = prompt("Please enter your birth year:");
-
-      if (birthYear === null) {
-        setAccount(undefined);
-        setUserAge(undefined);
-        return;
-      }
-
-      birthYear = parseInt(birthYear);
-
-      if (isNaN(birthYear) || birthYear < 1900 || birthYear > 2023) {
-        alert("Invalid birth year. Please enter a valid year between 1900 and 2023.");
-        setAccount(undefined);
-        setUserAge(undefined);
-      } else {
-        setUserAge(2023 - birthYear);
-        setBirthYear(birthYear);
-      }
     } else {
       console.log("No account found");
     }
   };
 
-  const setBirthYear = async (year) => {
-    if (atm) {
-        try {
-            await atm.setBirthYear(year);
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-  };
-
-  const connectAccount = async() => {
+  const connectAccount = async () => {
     if (!ethWallet) {
-      alert('MetaMask wallet is required to connect');
+      alert("MetaMask wallet is required to connect");
       return;
     }
-  
-    const accounts = await ethWallet.request({ method: 'eth_requestAccounts' });
+
+    const accounts = await ethWallet.request({ method: "eth_requestAccounts" });
     handleAccount(accounts);
-    
-    // once wallet is set we can get a reference to our deployed contract
+
     getATMContract();
   };
 
@@ -78,54 +50,76 @@ export default function HomePage() {
     const provider = new ethers.providers.Web3Provider(ethWallet);
     const signer = provider.getSigner();
     const atmContract = new ethers.Contract(contractAddress, atmABI, signer);
- 
-    setATM(atmContract);
-  }
 
-  const getBalance = async() => {
+    setATM(atmContract);
+  };
+
+  const getBalance = async () => {
     if (atm) {
       setBalance((await atm.getBalance()).toNumber());
     }
-  }
+  };
 
-  const deposit = async() => {
+  const deposit = async () => {
     if (atm) {
       let tx = await atm.deposit(1);
-      await tx.wait()
+      await tx.wait();
       getBalance();
     }
-  }
+  };
 
-  const withdraw = async() => {
+  const withdraw = async () => {
     if (atm) {
       let tx = await atm.withdraw(1);
-      await tx.wait()
+      await tx.wait();
       getBalance();
     }
-  }
+  };
+
+  const addAndAssert = async () => {
+    if (atm && num1 !== "" && num2 !== "") {
+      try {
+        const result = await atm.AddAndAssert(
+          parseInt(num1),
+          parseInt(num2)
+        );
+        alert(`AddAndAssert Result: ${result.toNumber()}`);
+      } catch (error) {
+        alert(error.message);
+      }
+    } else {
+      alert("Please enter valid numbers for num1 and num2.");
+    }
+  };
+
+  const checkAndRevert = async () => {
+    if (atm && checkNum !== "") {
+      try {
+        const result = await atm.CheckAndRevert(parseInt(checkNum));
+        alert(`CheckAndRevert Result: ${result}`);
+      } catch (error) {
+        alert(error.message);
+      }
+    } else {
+      alert("Please enter a valid number for CheckAndRevert.");
+    }
+  };
 
   const initUser = () => {
+    // Check to see if the user has Metamask
     if (!ethWallet) {
-      return <p>Please install Metamask in order to use this ATM.</p>;
+      return <p>Please install Metamask to use this ATM.</p>;
     }
-  
+
+    // Check to see if the user is connected. If not, connect to their account
     if (!account) {
       return (
-        <div>
-          <p>You must be at least 18 years old to have an account.</p>
-          <button onClick={connectAccount}>Login Using Metamask</button>
-        </div>
+        <button onClick={connectAccount}>
+          Please connect your Metamask wallet
+        </button>
       );
     }
-  
-    if (userAge === undefined) {
-      return null;
-    }
-  
-    if (userAge < 18) {
-      return <p class="block">Sorry, you must be at least 18 years old to use this service.</p>;
-    }
-  
+
     if (balance === undefined) {
       getBalance();
     }
@@ -136,23 +130,57 @@ export default function HomePage() {
         <p>Your Balance: {balance}</p>
         <button onClick={deposit}>Deposit 1 ETH</button>
         <button onClick={withdraw}>Withdraw 1 ETH</button>
-      </div>
-    )
-  }
 
-  useEffect(() => {getWallet();}, []);
+        <div>
+          <label>
+            Num1:
+            <input
+              type="text"
+              value={num1}
+              onChange={(e) => setNum1(e.target.value)}
+            />
+          </label>
+          <label>
+            Num2:
+            <input
+              type="text"
+              value={num2}
+              onChange={(e) => setNum2(e.target.value)}
+            />
+          </label>
+          <button onClick={addAndAssert}>AddAndAssert</button>
+        </div>
+
+        <div>
+          <label>
+            CheckNum:
+            <input
+              type="text"
+              value={checkNum}
+              onChange={(e) => setCheckNum(e.target.value)}
+            />
+          </label>
+          <button onClick={checkAndRevert}>CheckAndRevert</button>
+        </div>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    getWallet();
+  }, []);
 
   return (
     <main className="container">
-      <header><h1>Welcome to the Metacrafters ATM!</h1></header>
+      <header>
+        <h1>Welcome to the Metacrafters ATM!</h1>
+      </header>
       {initUser()}
       <style jsx>{`
         .container {
           text-align: center;
-          background-color:violet;
         }
-      `}
-      </style>
+      `}</style>
     </main>
-  )
+  );
 }
