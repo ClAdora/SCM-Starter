@@ -1,54 +1,41 @@
-# Metacrafters ATM
+# Solidity Assessment Contract
 
 ## Overview
 
-This project consists of a simple decentralized application (DApp) built with React and a corresponding smart contract written in Solidity. The DApp simulates an ATM system that allows users to deposit and withdraw funds based on certain conditions. The smart contract, named `Assessment.sol`, is deployed on the Ethereum blockchain, and the React app, `HomePage.js`, interacts with the contract through the MetaMask wallet.
+This Solidity smart contract, named `Assessment.sol`, serves as a basic demonstration of a financial contract. It features functionality for depositing and withdrawing funds, along with additional functions for asserting conditions. The contract is intended for educational purposes and does not include complex features.
 
 ## Features
 
-- **Connection with MetaMask:** The React app connects to the MetaMask wallet to interact with the Ethereum blockchain.
+- **Deposit and Withdrawal:** The contract allows the owner to deposit and withdraw funds, with events (`Deposit` and `Withdraw`) emitted for transparency.
 
-- **Deposit and Withdrawal:** Users can deposit and withdraw funds from the ATM, subject to age verification and other conditions.
+- **Balance Inquiry:** Users can inquire about the contract's current balance.
+
+- **Assert Functions:**
+  - `AddAndAssert(uint256 num1, uint256 num2):` Ensures that two input numbers are not equal and returns their sum.
+  - `CheckAndRevert(uint256 _dataToCheck):` Reverts the transaction with an error message if the input data is less than 20; otherwise, returns true.
 
 ## Smart Contract Details (Assessment.sol)
 
-- **Owner:** The contract owner is set during deployment and has special privileges.
+- **Owner:** The address of the contract owner (deployer).
 
-- **Balance:** Tracks the balance of the smart contract.
+- **Balance:** The current balance of the contract.
 
-
+- **Events:**
+  - `Deposit(uint256 amount):` Emitted when funds are deposited.
+  - `Withdraw(uint256 amount):` Emitted when funds are withdrawn.
 
 - **Functions:**
   - `getBalance():` Retrieves the current balance of the contract.
-  - `setBirthYear(uint256 _year):` Sets the birth year for a user.
   - `deposit(uint256 _amount):` Allows the owner to deposit funds into the contract.
-  - `withdraw(uint256 _withdrawAmount):` Allows the owner to withdraw funds, with age and balance checks.
-
-## React App Details (HomePage.js)
-
-- **State Variables:**
-  - `ethWallet:` Stores the MetaMask wallet.
-  - `account:` Stores the connected user's Ethereum account.
-  - `atm:` Represents the deployed smart contract.
-  - `balance:` Tracks the user's balance.
-
-- **Functions:**
-  - `getWallet():` Connects the app to the MetaMask wallet.
-  - `handleAccount(account):` Handles the user account details and age verification.
-  - `connectAccount():` Connects the app to the user's MetaMask account.
-  - `getATMContract():` Gets a reference to the deployed smart contract.
-  - `getBalance():` Retrieves the user's balance from the smart contract.
-  - `deposit():` Deposits 1 ETH into the smart contract.
-  - `withdraw():` Withdraws 1 ETH from the smart contract.
+  - `withdraw(uint256 _withdrawAmount):` Allows the owner to withdraw funds, with an insufficient balance check.
+  - `AddAndAssert(uint256 num1, uint256 num2):` Ensures num1 is not equal to num2 and returns their sum.
+  - `CheckAndRevert(uint256 _dataToCheck):` Reverts the transaction if the input data is less than 20; otherwise, returns true.
 
 ## Getting Started
 
-1. Clone the repository.
-2. Install dependencies using `npm install` in the React app directory.
-3. Deploy the `Assessment.sol` contract to the Ethereum blockchain.
-4. Update the `contractAddress` variable in `HomePage.js` with the deployed contract address.
-5. Run the React app using `npm start`.
+1. Deploy the `Assessment.sol` contract on the Ethereum blockchain.
+2. Interact with the deployed contract using Ethereum wallets or other smart contract interaction tools.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is not licensed and is intended for educational purposes only.
