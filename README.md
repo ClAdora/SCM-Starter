@@ -8,8 +8,6 @@ This project consists of a simple decentralized application (DApp) built with Re
 
 - **Connection with MetaMask:** The React app connects to the MetaMask wallet to interact with the Ethereum blockchain.
 
-- **Age Verification:** Users must input their birth year to verify their age. Only users who are 18 years or older are allowed to access the ATM functions.
-
 - **Deposit and Withdrawal:** Users can deposit and withdraw funds from the ATM, subject to age verification and other conditions.
 
 ## Smart Contract Details (Assessment.sol)
@@ -18,14 +16,10 @@ This project consists of a simple decentralized application (DApp) built with Re
 
 - **Balance:** Tracks the balance of the smart contract.
 
-- **Birth Years:** A mapping that stores the birth year of each user.
 
-- **Modifiers:**
-  - `onlyAdult:` Ensures that the user is 18 years or older.
 
 - **Functions:**
   - `getBalance():` Retrieves the current balance of the contract.
-  - `userAge(address _user):` Retrieves the age of a user based on their birth year.
   - `setBirthYear(uint256 _year):` Sets the birth year for a user.
   - `deposit(uint256 _amount):` Allows the owner to deposit funds into the contract.
   - `withdraw(uint256 _withdrawAmount):` Allows the owner to withdraw funds, with age and balance checks.
@@ -37,12 +31,10 @@ This project consists of a simple decentralized application (DApp) built with Re
   - `account:` Stores the connected user's Ethereum account.
   - `atm:` Represents the deployed smart contract.
   - `balance:` Tracks the user's balance.
-  - `userAge:` Stores the user's age.
 
 - **Functions:**
   - `getWallet():` Connects the app to the MetaMask wallet.
   - `handleAccount(account):` Handles the user account details and age verification.
-  - `setBirthYear(year):` Sets the user's birth year on the smart contract.
   - `connectAccount():` Connects the app to the user's MetaMask account.
   - `getATMContract():` Gets a reference to the deployed smart contract.
   - `getBalance():` Retrieves the user's balance from the smart contract.
